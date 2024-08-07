@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us</title>
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        padding-top: 56px; /* To prevent content from hiding behind fixed navbar */
+      }
+      .navbar-brand img {
+        height: 40px;
+      }
+      .disclaimer {
+        margin-top: 20px;
+        font-size: 0.9em;
+        color: gray;
+      }
+      .response-message {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <a class="navbar-brand" href="#">
+        <img src="CIMB-Logo.png" alt="CIMB Logo" />
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="#"
+              >Contact <span class="sr-only">(current)</span></a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Form -->
+    <div class="container mt-5">
+      <h2>Contact Us</h2>
+      <form id="leadForm">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="firstName">First Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              placeholder="First Name"
+              required
+            />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="lastName">Last Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              placeholder="Last Name"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="companyName">Company Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="companyName"
+              placeholder="Company Name"
+              required
+            />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="phone">Phone</label>
+            <input
+              type="text"
+              class="form-control"
+              id="phone"
+              placeholder="Phone Number"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="mobile">Mobile</label>
+            <input
+              type="text"
+              class="form-control"
+              id="mobile"
+              placeholder="Mobile Number"
+              required
+            />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              placeholder="Email Address"
+              required
+            />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      <div class="disclaimer">
+        <p><strong>Disclaimer:</strong> This is only a demo website.</p>
+      </div>
+      <div id="responseMessage" class="response-message"></div>
+    </div>
+
+    <!-- JavaScript and Bootstrap Bundle with Popper -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document
+        .getElementById("leadForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const username = "apitestadmin";
+          const password = "Rules@2024";
+          const credentials = btoa(`${username}:${password}`); // Base64 encode
+
+          const leadData = {
+            caseTypeID: "VPlus-SA-Work-Lead-Ind",
+            processID: "",
+            parentCaseID: "",
+            content: {
+              TerritoryName: "Global",
+              TerritoryID: "BT1",
+              Industry: "Retail",
+              FirstName: document.getElementById("firstName").value,
+              LeadCompanyName: document.getElementById("companyName").value,
+              LastName: document.getElementById("lastName").value,
+              LeadPhone: document.getElementById("phone").value,
+              LeadRating: "2-Warm",
+              LeadMobile: document.getElementById("mobile").value,
+              LeadEmail: document.getElementById("email").value,
+              DefaultRoutingText: "Automatic routing",
+              IsAutomaticRouting: "True",
+            },
+          };
+
+          fetch("https://virtusa04.pegalabs.io/prweb/api/v1/cases", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Basic ${credentials}`, // Add Authorization header
+            },
+            body: JSON.stringify(leadData),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.ID) {
+                document.getElementById(
+                  "responseMessage"
+                ).innerHTML = `<div class="alert alert-success" role="alert">Lead created successfully! ID: ${data.ID}</div>`;
+                // Clear the form fields
+                document.getElementById("leadForm").reset();
+              } else {
+                document.getElementById(
+                  "responseMessage"
+                ).innerHTML = `<div class="alert alert-warning" role="alert">Success but no ID returned.</div>`;
+              }
+            })
+            .catch((error) => {
+              document.getElementById(
+                "responseMessage"
+              ).innerHTML = `<div class="alert alert-danger" role="alert">Error: ${error.message}</div>`;
+            });
+        });
+    </script>
+  </body>
+</html>
