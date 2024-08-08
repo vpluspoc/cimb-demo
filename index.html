@@ -152,7 +152,7 @@
           const credentials = btoa(`${username}:${password}`); // Base64 encode
 
           const leadData = {
-            caseTypeID: "VPlus-SA-Work-Lead-Ind",
+            caseTypeID: "PegaSAFS-Work-Lead-Ind",
             processID: "",
             parentCaseID: "",
             content: {
@@ -171,7 +171,7 @@
             },
           };
 
-          fetch("https://virtusa04.pegalabs.io/prweb/api/v1/cases", {
+          fetch("https://cimbsafs.pegatsdemo.com/prweb/api/v1/cases", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
